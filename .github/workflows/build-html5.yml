@@ -33,6 +33,7 @@ jobs:
           haxelib install hscript
           haxelib install actuate || true
           haxelib install flixel-tools || true
+          haxelib install extension-webm || true
 
           haxelib list
           haxelib run lime setup -y || true
