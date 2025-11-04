@@ -14,40 +14,59 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Show repo (sanity)
+        run: |
+          ls -la
+          test -f Project.xml || (echo "❌ Missing Project.xml in repo root" && exit 1)
+
       - name: Install Haxe
         uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: '4.2.5'   # try 4.2.5 first; switch to 4.3.3 if your repo expects it
+          haxe-version: '4.2.5'
 
-      - name: Haxelib setup & deps
+      - name: Haxelib setup and deps (pin Kade-era versions)
         shell: bash
         run: |
-          mkdir -p "$HOME/haxelib"
-          haxelib setup "$HOME/haxelib"
-          haxelib newrepo
+          set -euxo pipefail
 
-          haxelib install lime
-          haxelib install openfl
-          haxelib install flixel
-          haxelib install flixel-addons
-           haxelib install flixel-ui
-          haxelib install polymod || true
-          haxelib install hscript
-          haxelib install actuate || true
-          haxelib install flixel-tools || true
-          haxelib install extension-webm || true
-          haxelib install newgrounds || true
-          
+          # point haxelib to a real dir
+          mkdir -p "$HOME/haxelib"
+          echo "$HOME/haxelib" > "$HOME/.haxelib"
+          haxelib config
+
+          # ---- install specific versions (Flixel 4.x stack) ----
+          haxelib install lime 8.0.2
+          haxelib install openfl 9.1.0
+          haxelib install flixel 4.11.0
+          haxelib install flixel-addons 2.11.0
+          haxelib install flixel-ui 2.5.0
+          haxelib install polymod 1.6.1
+          haxelib install hscript 2.4.0
+          haxelib install actuate
+          haxelib install flixel-tools
+          haxelib install extension-webm
+          haxelib install newgrounds
+
+          # ---- select those versions explicitly ----
+          haxelib set lime 8.0.2
+          haxelib set openfl 9.1.0
+          haxelib set flixel 4.11.0
+          haxelib set flixel-addons 2.11.0
+          haxelib set flixel-ui 2.5.0
+          haxelib set polymod 1.6.1
+          haxelib set hscript 2.4.0
+
           haxelib list
           haxelib run lime setup -y || true
           haxelib run openfl setup -y || true
 
-
       - name: Build HTML5 (final)
-        run: |
-          haxelib run openfl build html5 -final
+        env:
+          OPENFL_DEFAULT_PROJECT: Project.xml
+        run: haxelib run openfl build html5 -final
 
       - name: Upload HTML5 build artifact
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: html5-build
