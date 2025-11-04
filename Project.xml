@@ -184,5 +184,6 @@
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
 	<haxedef name="NG_LOGIN" if="newgrounds" />
+<assets path="assets" rename="assets" include="**" if="html5" />
 	
 </project>
