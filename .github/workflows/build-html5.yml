@@ -30,6 +30,8 @@ jobs:
           haxelib install openfl
           haxelib install flixel
           haxelib install flixel-addons
+           haxelib install flixel-ui
+          haxelib install polymod || true
           haxelib install hscript
           haxelib install actuate || true
           haxelib install flixel-tools || true
