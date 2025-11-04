@@ -36,7 +36,8 @@ jobs:
           haxelib install actuate || true
           haxelib install flixel-tools || true
           haxelib install extension-webm || true
-
+          haxelib install newgrounds || true
+          
           haxelib list
           haxelib run lime setup -y || true
           haxelib run openfl setup -y || true
